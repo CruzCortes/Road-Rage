@@ -17,6 +17,7 @@ to setup
   set-default-shape turtles "pablo"
   draw-ground  
   draw-road
+  draw-buildings
   reset-ticks
 end
 
@@ -26,9 +27,19 @@ to draw-ground
   ]
 end
 
+
 to draw-road
-  ask patches with [ abs pxcor <= 5 ]
+  ask patches with [ abs pxcor <= 10 ]
   [set pcolor grey - 2.5 + random-float 0.25
   ]
+  ask patches with [ abs pxcor <= 9 ]
+  [set pcolor grey 
+  ]
 end
+
+
+
+
+
+
 
