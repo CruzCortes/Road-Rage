@@ -27,7 +27,7 @@ to draw-ground
 end
 
 to draw-road
-  ask patches with [ abs pycor <= 5 ]
+  ask patches with [ abs pxcor <= 5 ]
   [set pcolor grey - 2.5 + random-float 0.25
   ]
 end
