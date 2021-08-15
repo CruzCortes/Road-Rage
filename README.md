@@ -1,23 +1,26 @@
 globals [
   road-rager
-  lanes 
+  lanes
 ]
 
 turtles-own [
-  speed
-  top-speed
-  target-lane
-  tolerance
-  patience
-  road-rage-mode
+  speed       
+  top-speed     
+  target-lane  
+  patience      
 ]
 
-to setup 
+to setup
   clear-all
   set-default-shape turtles "pablo"
-  draw-ground  
+  create-turtles 1
+  ask turtles
+  [
+    set shape "pablo"
+    set size 4
+  ]
+  draw-ground
   draw-road
-  draw-buildings
   reset-ticks
 end
 
@@ -33,13 +36,15 @@ to draw-road
   [set pcolor grey - 2.5 + random-float 0.25
   ]
   ask patches with [ abs pxcor <= 9 ]
-  [set pcolor grey 
+  [set pcolor grey
   ]
 end
 
-
-
-
-
-
+to go
+  ask turtles 
+  [
+    forward 1
+  ]
+  tick
+end
 
