@@ -12,11 +12,15 @@ turtles-own [
   road-rager? 
   encounters
   distance-traveled 
+  laps
+  real-distance
   starting-point
+  dead?
+  done?
 ]
 
 to setup
-  clear-all
+  clear-all 
   set-default-shape turtles "car"
   draw-road
   create-or-remove-cars
@@ -29,7 +33,10 @@ end
 
 
 to calculate-distance
-  set distance-traveled distance selected-car ; [xcor] of selected-car - [starting-point] of selected-car
+  set distance-traveled  [xcor] of selected-car - [starting-point] of selected-car
+  if  distance-traveled <= 0 [set laps laps + 1 ]
+  set real-distance laps * 33 
+  if real-distance > distance-to-travel [set done? true]
 end
 
 to finish-line
@@ -61,7 +68,6 @@ end
 
 to road-rage
 
-  
   set heading 90
   speed-up-car ; we tentatively speed up, but might have to slow down
   let blocking-cars other turtles in-cone (1 + speed) 180 with [ y-distance <= 1 ]
@@ -76,17 +82,22 @@ to road-rage
     
     choose-new-lane
     
-    ;if distance min-one-of blocking-cars [distance myself ]< 5 [die]
+    if xcor - distance min-one-of blocking-cars  [distance myself] > 1 [set number-of-cars number-of-cars - 1 die]
+    
+  ]
+  
+  if turtle 0 != nobody [
+  calculate-distance
   ]
   
   if blocking-car = nobody[
   set color red
   ]
-  calculate-distance
+ 
   forward speed
   
   ask turtles with [ patience <= 0 ] [ choose-new-lane ]
-  
+   
 end
 
 to create-or-remove-cars
@@ -108,7 +119,8 @@ to create-or-remove-cars
     set distance-traveled 0
     set road-rager? false
     set starting-point xcor
-    
+    set dead? false
+    set done? false
     set patience random max-patience
   ]
 
@@ -178,6 +190,7 @@ to go
   ask turtles with [road-rager?] [ road-rage ]
   ask turtles with [ ycor != target-lane ] [ move-to-target-lane ]
   tick
+  if all? turtles [done?] [stop]
 end
 
 to move-forward ; turtle procedure
@@ -191,8 +204,10 @@ to move-forward ; turtle procedure
     ; down so you are driving a bit slower than that car.
     set speed [ speed ] of blocking-car
     slow-down-car
+    if xcor - distance min-one-of blocking-cars  [distance myself] < 1 [set number-of-cars number-of-cars - 1 die]
   ]
-  calculate-distance
+  if turtle 0 != nobody[
+    calculate-distance]
   forward speed
 end
 
